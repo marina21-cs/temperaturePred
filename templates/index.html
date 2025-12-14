@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌡️ Philippine Temperature Prediction - January 2026</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: var(--primary-gradient) !important;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .hero-section {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .hero-section h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .hero-section p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-icon.hot { background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; }
+        .stat-icon.cold { background: linear-gradient(135deg, #74b9ff, #0984e3); color: white; }
+        .stat-icon.avg { background: linear-gradient(135deg, #55efc4, #00b894); color: white; }
+        .stat-icon.cities { background: linear-gradient(135deg, #a29bfe, #6c5ce7); color: white; }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2d3436;
+        }
+        
+        .stat-label {
+            color: #636e72;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2d3436;
+            margin-bottom: 30px;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 30px;
+            background: var(--primary-gradient);
+            border-radius: 5px;
+        }
+        
+        .image-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+        
+        .image-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .image-card img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .image-card .card-body {
+            padding: 20px;
+        }
+        
+        .image-card h5 {
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 10px;
+        }
+        
+        .image-card p {
+            color: #636e72;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        .accuracy-card {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .accuracy-card h3 {
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+        
+        .accuracy-metric {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .accuracy-metric .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .accuracy-metric .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .city-table {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .city-table table {
+            margin: 0;
+        }
+        
+        .city-table th {
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 600;
+            padding: 15px;
+            border: none;
+        }
+        
+        .city-table td {
+            padding: 12px 15px;
+            vertical-align: middle;
+        }
+        
+        .city-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .temp-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .temp-hot { background: #ffe6e6; color: #d63031; }
+        .temp-warm { background: #fff3e6; color: #e17055; }
+        .temp-mild { background: #e6fff3; color: #00b894; }
+        .temp-cool { background: #e6f3ff; color: #0984e3; }
+        
+        .download-btn {
+            background: var(--primary-gradient);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            transform: scale(1.05);
+            color: white;
+        }
+        
+        .search-box {
+            border-radius: 30px;
+            padding: 12px 25px;
+            border: 2px solid #dfe6e9;
+            width: 100%;
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-box:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        
+        .footer {
+            background: #2d3436;
+            color: white;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+        
+        .weather-note {
+            background: linear-gradient(135deg, #fdcb6e, #e17055);
+            color: white;
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+        }
+        
+        .weather-note i {
+            font-size: 2rem;
+            margin-right: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+            .stat-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="fas fa-temperature-high me-2"></i>
+                PH Weather Prediction
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="#statistics">Statistics</a>
+                <a class="nav-link" href="#graphs">Graphs</a>
+                <a class="nav-link" href="#cities">Cities</a>
+                <a class="nav-link" href="#download">Download</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1><i class="fas fa-sun me-3"></i>January 2026 Temperature Predictions</h1>
+            <p>Machine Learning-powered weather forecasting for 138 Philippine cities</p>
+            <p class="mt-3">
+                <span class="badge bg-light text-dark px-4 py-2 fs-6">
+                    <i class="fas fa-cloud-sun me-2"></i>Amihan Season (Northeast Monsoon)
+                </span>
+            </p>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Weather Note -->
+        <div class="weather-note d-flex align-items-center">
+            <i class="fas fa-info-circle"></i>
+            <div>
+                <strong>Philippine Weather Context:</strong> January is part of the cool dry season (Amihan), 
+                characterized by the northeast monsoon. Expect cooler temperatures, especially in northern regions, 
+                with Baguio being the coolest city.
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <section id="statistics" class="mb-5">
+            <h2 class="section-title">Key Statistics</h2>
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon cities">
+                            <i class="fas fa-city"></i>
+                        </div>
+                        <div class="stat-value">{{ stats.total_cities }}</div>
+                        <div class="stat-label">Cities Analyzed</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon avg">
+                            <i class="fas fa-thermometer-half"></i>
+                        </div>
+                        <div class="stat-value">{{ stats.avg_temp }}°C</div>
+                        <div class="stat-label">National Average</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon hot">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="stat-value">{{ stats.hottest_temp }}°C</div>
+                        <div class="stat-label">Hottest ({{ stats.hottest_city }})</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon cold">
+                            <i class="fas fa-snowflake"></i>
+                        </div>
+                        <div class="stat-value">{{ stats.coolest_temp }}°C</div>
+                        <div class="stat-label">Coolest ({{ stats.coolest_city }})</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Model Accuracy -->
+        <section class="mb-5">
+            <h2 class="section-title">Model Accuracy</h2>
+            <div class="accuracy-card">
+                <h3><i class="fas fa-chart-line me-2"></i>{{ accuracy.Model }} Performance</h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="accuracy-metric">
+                            <div class="value">{{ "%.4f"|format(accuracy.R2_Score) }}</div>
+                            <div class="label">R² Score (99.76% variance explained)</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="accuracy-metric">
+                            <div class="value">±{{ "%.2f"|format(accuracy.MAE) }}°C</div>
+                            <div class="label">Mean Absolute Error</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="accuracy-metric">
+                            <div class="value">{{ "%.2f"|format(accuracy.RMSE) }}°C</div>
+                            <div class="label">Root Mean Square Error</div>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-center mt-4 mb-0">
+                    <span class="badge bg-white text-success px-4 py-2 fs-6">
+                        <i class="fas fa-check-circle me-2"></i>EXCELLENT ACCURACY
+                    </span>
+                </p>
+            </div>
+        </section>
+
+        <!-- Graphs Section -->
+        <section id="graphs" class="mb-5">
+            <h2 class="section-title">Visualization Graphs</h2>
+            
+            <div class="row">
+                <!-- Geographic Map -->
+                <div class="col-12 mb-4">
+                    <div class="image-card">
+                        <img src="/images/Figure5_GeographicMap.png" alt="Geographic Temperature Map">
+                        <div class="card-body">
+                            <h5><i class="fas fa-map-marked-alt me-2"></i>Geographic Temperature Map</h5>
+                            <p>Satellite view of Philippines with temperature predictions overlaid for all 138 cities.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="image-card">
+                        <img src="/images/Figure1_ModelComparison.png" alt="Model Comparison">
+                        <div class="card-body">
+                            <h5><i class="fas fa-balance-scale me-2"></i>Model Comparison</h5>
+                            <p>Comparison of ML models: Random Forest, Gradient Boosting, and Ridge Regression.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="image-card">
+                        <img src="/images/Figure2_PredictionAccuracy.png" alt="Prediction Accuracy">
+                        <div class="card-body">
+                            <h5><i class="fas fa-bullseye me-2"></i>Prediction Accuracy</h5>
+                            <p>Actual vs Predicted temperature scatter plot showing model performance.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="image-card">
+                        <img src="/images/Figure4_DailyTrends.png" alt="Daily Trends">
+                        <div class="card-body">
+                            <h5><i class="fas fa-chart-line me-2"></i>Daily Temperature Trends</h5>
+                            <p>Temperature trends throughout January 2026 for major Philippine cities.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="image-card">
+                        <img src="/images/Figure7_HourlyPattern.png" alt="Hourly Pattern">
+                        <div class="card-body">
+                            <h5><i class="fas fa-clock me-2"></i>Hourly Temperature Pattern</h5>
+                            <p>Average temperature variation throughout the day across all cities.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="image-card">
+                        <img src="/images/Figure6_TemperatureRange.png" alt="Temperature Range">
+                        <div class="card-body">
+                            <h5><i class="fas fa-arrows-alt-v me-2"></i>Temperature Range</h5>
+                            <p>Min/Max temperature range for cities with highest variation.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="image-card">
+                        <img src="/images/Figure8_FeatureImportance.png" alt="Feature Importance">
+                        <div class="card-body">
+                            <h5><i class="fas fa-sort-amount-up me-2"></i>Feature Importance</h5>
+                            <p>Which features contribute most to temperature predictions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- City Table -->
+        <section id="cities" class="mb-5">
+            <h2 class="section-title">City Predictions</h2>
+            
+            <div class="mb-4">
+                <input type="text" class="search-box" id="citySearch" 
+                       placeholder="🔍 Search for a city...">
+            </div>
+            
+            <div class="city-table">
+                <table class="table table-hover" id="cityTable">
+                    <thead>
+                        <tr>
+                            <th>City</th>
+                            <th>Avg Temp</th>
+                            <th>Min Temp</th>
+                            <th>Max Temp</th>
+                            <th>Humidity</th>
+                            <th>Location</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cityTableBody">
+                        <!-- Data loaded via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Download Section -->
+        <section id="download" class="mb-5">
+            <h2 class="section-title">Download Data</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="stat-card text-center">
+                        <i class="fas fa-file-csv fa-3x text-success mb-3"></i>
+                        <h5>City Summary</h5>
+                        <p class="text-muted">Monthly averages for all 138 cities</p>
+                        <a href="/download/January2026_CitySummary.csv" class="btn download-btn">
+                            <i class="fas fa-download me-2"></i>Download
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card text-center">
+                        <i class="fas fa-calendar-alt fa-3x text-primary mb-3"></i>
+                        <h5>Daily Predictions</h5>
+                        <p class="text-muted">Day-by-day forecasts (4,278 records)</p>
+                        <a href="/download/January2026_DailyPredictions.csv" class="btn download-btn">
+                            <i class="fas fa-download me-2"></i>Download
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card text-center">
+                        <i class="fas fa-clock fa-3x text-warning mb-3"></i>
+                        <h5>Hourly Predictions</h5>
+                        <p class="text-muted">3-hour intervals (34,224 records)</p>
+                        <a href="/download/January2026_HourlyPredictions.csv" class="btn download-btn">
+                            <i class="fas fa-download me-2"></i>Download
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container text-center">
+            <p class="mb-2">
+                <i class="fas fa-code me-2"></i>Built with Python, Flask & Machine Learning
+            </p>
+            <p class="mb-0 opacity-75">
+                Temperature Prediction System for Philippine Cities | January 2026
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Load city data
+        async function loadCityData() {
+            try {
+                const response = await fetch('/api/cities');
+                const cities = await response.json();
+                
+                const tbody = document.getElementById('cityTableBody');
+                tbody.innerHTML = '';
+                
+                cities.sort((a, b) => b.january_avg_temp - a.january_avg_temp);
+                
+                cities.forEach(city => {
+                    const tempClass = getTempClass(city.january_avg_temp);
+                    const row = `
+                        <tr>
+                            <td><strong>${city.city_name}</strong></td>
+                            <td><span class="temp-badge ${tempClass}">${city.january_avg_temp}°C</span></td>
+                            <td>${city.january_min_temp}°C</td>
+                            <td>${city.january_max_temp}°C</td>
+                            <td>${city.january_avg_humidity}%</td>
+                            <td><small>${city.latitude.toFixed(2)}°N, ${city.longitude.toFixed(2)}°E</small></td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error('Error loading city data:', error);
+            }
+        }
+        
+        function getTempClass(temp) {
+            if (temp >= 27) return 'temp-hot';
+            if (temp >= 25) return 'temp-warm';
+            if (temp >= 22) return 'temp-mild';
+            return 'temp-cool';
+        }
+        
+        // Search functionality
+        document.getElementById('citySearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#cityTableBody tr');
+            
+            rows.forEach(row => {
+                const cityName = row.querySelector('td').textContent.toLowerCase();
+                row.style.display = cityName.includes(searchTerm) ? '' : 'none';
+            });
+        });
+        
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', loadCityData);
+    </script>
+</body>
+</html>
