@@ -1,0 +1,2 @@
+Model,MAE,RMSE,R2_Score,Training_Samples,Test_Samples,Cities_Predicted,Prediction_Period,Weather_Season
+Gradient Boosting,0.05591435596736173,0.12105854202475765,0.9976081243105307,32646,8162,138,January 2026,Amihan (Northeast Monsoon)
